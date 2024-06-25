@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlovalWaves</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('globalwaves.jpg');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: center;
+        }
+        .container {
+            text-align: center;
+        }
+        .request-box {
+            background-color: white;
+            color: black;
+            width: 400px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+        }
+        .response-box {
+            background-color: white;
+            color: black;
+            width: 400px;
+            min-height: 70px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1> Welcome to GlobalWaves! </h1>
+    <div class="request-box">
+        <input type="text" id="request-input" placeholder="Type your request here" style="width: 100%; border: none; outline: none;">
+    </div>
+    <div class="response-box" id="response-box">
+        <!-- Server response will be displayed here -->
+    </div>
+</div>
+<script>
+    document.getElementById('request-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            const request = event.target.value;
+            fetch('https://yourserver.com/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ request })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response-box').textContent = data.response;
+                })
+                .catch(error => {
+                    document.getElementById('response-box').textContent = 'Error: ' + error;
+                });
+        }
+    });
+</script>
+</body>
+</html>
