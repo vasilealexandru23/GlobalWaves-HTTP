@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlovalWaves</title>
+    <title>GlobalWaves</title>
     <style>
         body {
             background-color: black;
@@ -55,20 +55,21 @@
 <script>
     document.getElementById('request-input').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
+            event.preventDefault();
             const request = event.target.value;
-            fetch('https://yourserver.com/api', {
-                method: 'POST',
+            fetch(`http://127.0.0.1:80?request=${encodeURIComponent(request)}`, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ request })
+                    'Content-Type': 'text/plain'
+                }
             })
-                .then(response => response.json())
+                .then(response => response.text())
                 .then(data => {
-                    document.getElementById('response-box').textContent = data.response;
+                    document.getElementById('response-box').innerText = data;
+                    document.getElementById('request-input').value = '';
                 })
                 .catch(error => {
-                    document.getElementById('response-box').textContent = 'Error: ' + error;
+                    document.getElementById('response-box').innerText = error;
                 });
         }
     });
