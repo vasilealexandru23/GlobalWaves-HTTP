@@ -1,5 +1,6 @@
 package com.globalwaves.httpserver.core;
 
+import com.globalwaves.httpserver.HttpServer;
 import com.globalwaves.httpserver.parser.HttpParser;
 import com.globalwaves.httpserver.parser.HttpParsingException;
 import com.globalwaves.httpserver.parser.HttpRequest;
@@ -73,6 +74,9 @@ public class HttpConnectionWorkerThread extends Thread {
 
 	private void processRequest(final OutputStream client, final String request) throws IOException {
 		final String jsonTest = "{\"message\": \"Hello World!\"}";
+
+		/* TODO : Parse the request. */
+
 		String response = "HTTP/1.1 200 OK" + CRLF
 				+ "Content-Type: application/json" + CRLF
 				+ "Access-Control-Allow-Origin: *" + CRLF
@@ -97,7 +101,7 @@ public class HttpConnectionWorkerThread extends Thread {
 				sendBackground(replyClient);
 			else if ("/favicon.ico".equals(req.getRequestTarget()))
 				sendIcon(replyClient);
-			else if (req.getRequestTarget().startsWith("/?request="))
+			else if (req.getRequestTarget().startsWith("/?name="))
 				processRequest(replyClient, req.getRequestTarget());
 
 			LOGGER.info(" * Connection Processing Finished.");

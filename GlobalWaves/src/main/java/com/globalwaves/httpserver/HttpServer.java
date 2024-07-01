@@ -5,6 +5,7 @@ import com.globalwaves.httpserver.config.ConfigurationManager;
 import com.globalwaves.httpserver.core.ServerListenerThread;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -13,6 +14,9 @@ import java.util.logging.Logger;
 public class HttpServer {
 
 	private final static Logger LOGGER = Logger.getLogger("HttpServer");
+
+	/* When server is born. */
+	public static long dataStart = System.currentTimeMillis();
 
 	public static void main(String[] args) throws IOException {
 		LOGGER.info("Server starting...");
