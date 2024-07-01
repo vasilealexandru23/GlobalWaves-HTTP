@@ -22,14 +22,24 @@
         .container {
             text-align: center;
         }
-        .request-box {
+        .input-container {
+            margin-bottom: 10px;
+        }
+        .input-box {
             background-color: white;
             color: black;
             width: 400px;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+        .input-field {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 5px;
+            font-size: 16px;
         }
         .response-box {
             background-color: white;
@@ -39,14 +49,32 @@
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1> Welcome to GlobalWaves! </h1>
-    <div class="request-box">
-        <input type="text" id="request-input" placeholder="Type your request here" style="width: 100%; border: none; outline: none;">
+    <div class="input-container">
+        <div class="input-box">
+            <input type="text" id="name-input" placeholder="Type your name here" class="input-field">
+        </div>
+    </div>
+    <div class="input-container">
+        <div class="input-box">
+            <input type="text" id="age-input" placeholder="Type your age here" class="input-field">
+        </div>
+    </div>
+    <div class="input-container">
+        <div class="input-box">
+            <input type="text" id="city-input" placeholder="Type your city here" class="input-field">
+        </div>
+    </div>
+    <div class="input-container">
+        <div class="input-box">
+            <input type="text" id="request-input" placeholder="Type your request here" class="input-field">
+        </div>
     </div>
     <div class="response-box" id="response-box">
         <!-- Server response will be displayed here -->
@@ -56,8 +84,19 @@
     document.getElementById('request-input').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
+            const name = document.getElementById('name-input').value;
+            const age = document.getElementById('age-input').value;
+            const city = document.getElementById('city-input').value;
             const request = event.target.value;
-            fetch(`http://127.0.0.1:80?request=${encodeURIComponent(request)}`, {
+            const date = Date.now();
+            const params = new URLSearchParams({
+                name: name,
+                age: age,
+                city: city,
+                request: request,
+                date: date
+            });
+            fetch(`http://127.0.0.1:80?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'text/plain'
