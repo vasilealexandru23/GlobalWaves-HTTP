@@ -14,9 +14,6 @@ public class HttpServer {
 	/* When server is born. */
 	public static long dataStart;
 
-	/* Communication with app. */
-	public static MainPlayerThread mainPlayerThread;
-
 	/* Logger for info. */
 	private final static Logger LOGGER = Logger.getLogger("HttpServer");
 
@@ -30,10 +27,6 @@ public class HttpServer {
 
 		LOGGER.info("Using port : " + conf.getPort());
 		LOGGER.info("Using webroot : " + conf.getWebroot());
-
-		/* Start the app. */
-		mainPlayerThread = new MainPlayerThread();
-		mainPlayerThread.start();
 
 		ServerListenerThread serverListenerThread = new ServerListenerThread(conf.getPort(), conf.getWebroot());
 		serverListenerThread.start();

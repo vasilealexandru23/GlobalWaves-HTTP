@@ -1,6 +1,8 @@
 package com.globalwaves.httpserver.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalwaves.httpserver.HttpServer;
+import com.globalwaves.httpserver.fileio.input.CommandInput;
 import com.globalwaves.httpserver.fileio.input.LibraryInput;
 import com.globalwaves.httpserver.parser.HttpParser;
 import com.globalwaves.httpserver.parser.HttpParsingException;
@@ -30,6 +32,8 @@ public class HttpConnectionWorkerThread extends Thread {
 		LibraryInput.setLibraryPath("src/main/resources/Library.json");
 		try {
 			LibraryInput library = LibraryInput.getInstance();
+			Database.setLibrary(library);
+			Database db = Database.getInstance();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -83,15 +87,20 @@ public class HttpConnectionWorkerThread extends Thread {
 	}
 
 	private void processRequest(final OutputStream client, final String request) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 		final String jsonTest = "{\"message\": \"Hello World!\"}";
 
 		/* TODO : Parse the request. */
 		String r = HttpParser.parseTarget(request);
 
+		// {"username":"Alex","command":"search+Song+","timestamp":11}
+		CommandInput newCommand = objectMapper.readValue(r, CommandInput.class);
+		newCommand.constructCommand();
+
+		System.out.println(r);
+
 		/* TODO: Send to application. */
 
-		/*TODO: Get from application response and send back to client. */
-		//---//
 
 		String response = "HTTP/1.1 200 OK" + CRLF
 				+ "Content-Type: application/json" + CRLF

@@ -40,6 +40,9 @@ public class HttpParser {
 		for (String pair : pairs) {
 			String[] keyValue = pair.split("=");
 
+			/* Invalid field. */
+			if (keyValue.length < 2) continue;
+
 			if (keyValue[0].equals("timestamp")) {
 				c.put(keyValue[0], (Long.parseLong(keyValue[1]) - HttpServer.dataStart) / 1000);
 			} else {
@@ -95,10 +98,9 @@ public class HttpParser {
 		}
 	}
 
-	private void parseHeaders(InputStreamReader reader, HttpRequest request) {
+	/* TODO */
+	private void parseHeaders(InputStreamReader reader, HttpRequest request) {}
 
-	}
-
-	private void parseBody(InputStreamReader reader, HttpRequest request) {
-	}
+	/* TODO */
+	private void parseBody(InputStreamReader reader, HttpRequest request) {}
 }
