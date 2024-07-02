@@ -86,7 +86,7 @@ public final class CommandInput {
 	/**
 	 * Function that constructs the commands.
 	 */
-	public void constructCommand() {
+	public boolean constructCommand() {
 		switch (command) {
 			case "search" -> {
 				commands.add(new SearchCommand(command, username, searchcmd,
@@ -175,9 +175,10 @@ public final class CommandInput {
 			} case "getOnlineUsers" -> {
 				commands.add(new GetOnlineUsersCommand(command, username, timestamp));
 			} default -> {
-				System.out.println("Command not found.");
+				return false;
 			}
 		}
+		return true;
 	}
 
 	public void setCommand(final String command) {

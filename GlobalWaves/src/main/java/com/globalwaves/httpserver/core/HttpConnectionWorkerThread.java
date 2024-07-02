@@ -1,6 +1,7 @@
 package com.globalwaves.httpserver.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.globalwaves.httpserver.HttpServer;
 import com.globalwaves.httpserver.fileio.input.CommandInput;
 import com.globalwaves.httpserver.fileio.input.LibraryInput;
@@ -88,19 +89,23 @@ public class HttpConnectionWorkerThread extends Thread {
 
 	private void processRequest(final OutputStream client, final String request) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		final String jsonTest = "{\"message\": \"Hello World!\"}";
+		String jsonTest;
 
 		/* TODO : Parse the request. */
 		String r = HttpParser.parseTarget(request);
+		ArrayNode outputs = objectMapper.createArrayNode();
 
-		// {"username":"Alex","command":"search+Song+","timestamp":11}
 		CommandInput newCommand = objectMapper.readValue(r, CommandInput.class);
-		newCommand.constructCommand();
 
-		System.out.println(r);
+		if (!newCommand.constructCommand()) {
+			jsonTest = "Command not found.";
+		} else {
+			jsonTest = "{\"message\": \"Hello World!\"}";
+			outputs.add(newCommand.getCommands().get(0).execute(Database.getInstance()));
+		}
 
-		/* TODO: Send to application. */
-
+//		System.out.println(r);
+//		System.out.println(outputs);
 
 		String response = "HTTP/1.1 200 OK" + CRLF
 				+ "Content-Type: application/json" + CRLF
