@@ -1,6 +1,7 @@
 package com.globalwaves.httpserver.core;
 
 import com.globalwaves.httpserver.HttpServer;
+import com.globalwaves.httpserver.fileio.input.LibraryInput;
 import com.globalwaves.httpserver.parser.HttpParser;
 import com.globalwaves.httpserver.parser.HttpParsingException;
 import com.globalwaves.httpserver.parser.HttpRequest;
@@ -23,6 +24,15 @@ public class HttpConnectionWorkerThread extends Thread {
 	public HttpConnectionWorkerThread(final Socket socketClient, final String html) {
 		this.socketClient = socketClient;
 		this.html = html;
+	}
+
+	static {
+		LibraryInput.setLibraryPath("src/main/resources/Library.json");
+		try {
+			LibraryInput library = LibraryInput.getInstance();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -76,6 +86,12 @@ public class HttpConnectionWorkerThread extends Thread {
 		final String jsonTest = "{\"message\": \"Hello World!\"}";
 
 		/* TODO : Parse the request. */
+		String r = HttpParser.parseTarget(request);
+
+		/* TODO: Send to application. */
+
+		/*TODO: Get from application response and send back to client. */
+		//---//
 
 		String response = "HTTP/1.1 200 OK" + CRLF
 				+ "Content-Type: application/json" + CRLF
@@ -95,14 +111,14 @@ public class HttpConnectionWorkerThread extends Thread {
 			HttpParser parser = new HttpParser();
 			HttpRequest req = parser.parseHttpRequest(requestClient);
 
-			if ("/80".equals(req.getRequestTarget()))
-				sendHtml(replyClient);
-			else if ("/globalwaves.jpg".equals(req.getRequestTarget()))
-				sendBackground(replyClient);
-			else if ("/favicon.ico".equals(req.getRequestTarget()))
-				sendIcon(replyClient);
-			else if (req.getRequestTarget().startsWith("/?name="))
-				processRequest(replyClient, req.getRequestTarget());
+			String requestTarget = req.getRequestTarget();
+
+			switch (requestTarget) {
+				case "/80" -> sendHtml(replyClient);
+				case "/globalwaves.jpg" -> sendBackground(replyClient);
+				case "/favicon.ico" -> sendIcon(replyClient);
+				default -> processRequest(replyClient, requestTarget);
+			}
 
 			LOGGER.info(" * Connection Processing Finished.");
 		} catch (IOException e) {

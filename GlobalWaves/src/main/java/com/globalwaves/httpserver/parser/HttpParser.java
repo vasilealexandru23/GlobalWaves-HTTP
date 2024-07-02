@@ -1,5 +1,9 @@
 package com.globalwaves.httpserver.parser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.globalwaves.httpserver.HttpServer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +25,29 @@ public class HttpParser {
 		parseBody(reader, request);
 
 		return request;
+	}
+
+	public static String parseTarget(final String line) {
+		ObjectNode c = new ObjectMapper().createObjectNode();
+
+		// Remove the leading slash and question mark
+		String target = line.substring(2);
+
+		// Split the string by the ampersand
+		String[] pairs = target.split("&");
+
+		// For each pair, split it by the equals sign and add it to the JSONObject
+		for (String pair : pairs) {
+			String[] keyValue = pair.split("=");
+
+			if (keyValue[0].equals("timestamp")) {
+				c.put(keyValue[0], (Long.parseLong(keyValue[1]) - HttpServer.dataStart) / 1000);
+			} else {
+				c.put(keyValue[0], keyValue[1]);
+			}
+		}
+
+		return c.toString();
 	}
 
 	private void parseRequestLine(InputStreamReader reader, HttpRequest request) throws IOException, HttpParsingException {

@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-public class ServerListenerThread extends Thread{
+public class ServerListenerThread extends Thread {
 
 	private int port;
 	private String webroot;

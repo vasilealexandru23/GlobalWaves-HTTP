@@ -1,4 +1,4 @@
-# Copyright 2024 Vasile Alexandru-Gabriel (vasilealexandru37@gmail.com)
+Copyright 2024 Vasile Alexandru-Gabriel (vasilealexandru37@gmail.com)
 
 # GlobalWaves - Audio Player x Http
 
@@ -61,6 +61,8 @@ depend on the artist or host they've subscribed to, to easily update every notif
  
 ## Program Flow
 
+This project used the already implemented logic used by
+
 Execution starts in `Main.java`, where the commands are read using `CommandInput.java`      
 class as an ArrayList and later be transformed into an array of specific commands that   
 just calls their execute method.
@@ -82,4 +84,4 @@ To handle all the required statistics, recommendations and ad breaks, I added a 
 musicplayer to easily insert the ad and for each normal user I added some fields for all his types
 of history.
 
-**NOTE: For more details about implementation check JavaDoc.**s
+**NOTE: For more details about implementation check JavaDoc.**

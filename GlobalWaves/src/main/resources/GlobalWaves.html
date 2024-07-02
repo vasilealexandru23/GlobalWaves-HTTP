@@ -90,11 +90,11 @@
             const request = event.target.value;
             const date = Date.now();
             const params = new URLSearchParams({
-                name: name,
+                username: name,
                 age: age,
                 city: city,
-                request: request,
-                date: date
+                command: request,
+                timestamp: date
             });
             fetch(`http://127.0.0.1:80?${params.toString()}`, {
                 method: 'GET',

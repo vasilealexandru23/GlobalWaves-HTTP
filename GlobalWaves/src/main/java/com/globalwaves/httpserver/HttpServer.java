@@ -5,27 +5,35 @@ import com.globalwaves.httpserver.config.ConfigurationManager;
 import com.globalwaves.httpserver.core.ServerListenerThread;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.logging.Logger;
 
 /**
  * Driver class for http server.
  */
 public class HttpServer {
-
-	private final static Logger LOGGER = Logger.getLogger("HttpServer");
-
 	/* When server is born. */
-	public static long dataStart = System.currentTimeMillis();
+	public static long dataStart;
+
+	/* Communication with app. */
+	public static MainPlayerThread mainPlayerThread;
+
+	/* Logger for info. */
+	private final static Logger LOGGER = Logger.getLogger("HttpServer");
 
 	public static void main(String[] args) throws IOException {
 		LOGGER.info("Server starting...");
+
+		dataStart = System.currentTimeMillis();
 
 		ConfigurationManager.getInstance().loadConfigurationFile("src/main/resources/http.json");
 		Configuration conf = ConfigurationManager.getInstance().getCurrentConfiguration();
 
 		LOGGER.info("Using port : " + conf.getPort());
 		LOGGER.info("Using webroot : " + conf.getWebroot());
+
+		/* Start the app. */
+		mainPlayerThread = new MainPlayerThread();
+		mainPlayerThread.start();
 
 		ServerListenerThread serverListenerThread = new ServerListenerThread(conf.getPort(), conf.getWebroot());
 		serverListenerThread.start();

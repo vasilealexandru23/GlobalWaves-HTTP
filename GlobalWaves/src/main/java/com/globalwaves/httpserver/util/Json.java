@@ -48,4 +48,3 @@ public class Json {
 		return objectWriter.writeValueAsString(o);
 	}
 }
-

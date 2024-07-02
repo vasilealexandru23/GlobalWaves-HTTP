@@ -1,30 +1,23 @@
-package com.globalwaves.httpserver.audiofiles;
+package com.globalwaves.httpserver.audiocollection;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.globalwaves.httpserver.musicplayer.MusicPlayer;
+import com.globalwaves.httpserver.musicplayer.Playback;
 import lombok.Getter;
-import musicplayer.AudioCollection;
-import musicplayer.MusicPlayer;
-import musicplayer.Playback;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
+@Getter
 public final class Playlist extends AudioCollection {
-	@Getter
 	private ArrayList<Song> songs = new ArrayList<>();
-	@Getter
 	private ArrayList<Song> shuffledPlaylist;
-	@Getter
 	private String name;
-	@Getter
 	private String owner;
-	@Getter
 	private int followers;
-	@Getter
 	private boolean visibility; /* true->public, false->private */
 
 	public Playlist(final String name, final String owner) {
@@ -112,7 +105,6 @@ public final class Playlist extends AudioCollection {
 
 	/**
 	 * Function that prints the state of a playlist.
-	 * @param playlist given playlist to check
 	 * @return String ("public" or "private")
 	 */
 	public String checkVisibility() {
@@ -301,6 +293,11 @@ public final class Playlist extends AudioCollection {
 		}
 	}
 
+	@Override
+	public void checkTrack(final Playback playback) {
+		this.checkCurrentSong(playback);
+	}
+
 	/**
 	 * Function that checks current playing song in playlist.
 	 */
@@ -314,7 +311,7 @@ public final class Playlist extends AudioCollection {
 			playback.setTimeWatched(updateTimeWatched);
 			if (!playback.isShuffle()) {
 				while (playback.getTimeWatched()
-						>= this.getSongs().get(playback.getIndexSong()).getDuration()) {
+						> this.getSongs().get(playback.getIndexSong()).getDuration()) {
 					updateTimeWatched = playback.getTimeWatched()
 							- this.getSongs().get(playback.getIndexSong()).getDuration();
 					playback.setTimeWatched(updateTimeWatched);
@@ -328,7 +325,7 @@ public final class Playlist extends AudioCollection {
 				}
 			} else {
 				while (playback.getTimeWatched()
-						>= shuffledPlaylist.get(playback.getIndexSongShuffled()).getDuration()) {
+						> shuffledPlaylist.get(playback.getIndexSongShuffled()).getDuration()) {
 					updateTimeWatched = playback.getTimeWatched()
 							- shuffledPlaylist.get(playback.getIndexSongShuffled()).getDuration();
 					playback.setTimeWatched(updateTimeWatched);
@@ -466,14 +463,5 @@ public final class Playlist extends AudioCollection {
 		}
 
 		playback.setLastInteracted(MusicPlayer.getTimestamp());
-	}
-
-	@Override
-	public void updatePlays(final Playback playback) {
-		if (playback.getIndexSong() == this.getSongs().size()) {
-			return;
-		}
-
-		currPlayingSong(playback).updatePlays(playback);
 	}
 }

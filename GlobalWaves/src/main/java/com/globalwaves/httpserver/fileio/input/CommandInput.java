@@ -1,2 +1,4 @@
-package com.globalwaves.httpserver.fileio.input;public class CommandInput {
+package com.globalwaves.httpserver.fileio.input;
+
+public class CommandInput {
 }

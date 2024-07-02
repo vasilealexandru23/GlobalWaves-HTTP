@@ -1,5 +1,9 @@
-package com.globalwaves.httpserver.audiofiles;
+package com.globalwaves.httpserver.audiocollection;
 
+import com.globalwaves.httpserver.musicplayer.Playback;
+import lombok.Getter;
+
+@Getter
 public abstract class AudioCollection {
 	public enum AudioType {
 		SONG,
@@ -9,7 +13,6 @@ public abstract class AudioCollection {
 	}
 
 	private AudioType type;
-	protected int plays;
 
 	/**
 	 * Function that sets the type of the track.
@@ -18,6 +21,13 @@ public abstract class AudioCollection {
 	public void setType(final AudioType type) {
 		this.type = type;
 	}
+
+	/**
+	 * Function that checks for a running playback if
+	 * some type of track (song, podcast, playlist) is running.
+	 * @param playback      current playback
+	 */
+	public abstract void checkTrack(Playback playback);
 
 	/**
 	 * Function that returns the name of the track.
@@ -53,20 +63,7 @@ public abstract class AudioCollection {
 
 	/**
 	 * Function that returns the owner of the track.
-	 * @return          owner of the track
 	 */
 	public abstract String getOwner();
-
-	/**
-	 * Function that returns the number of plays of the track.
-	 * @return          number of plays of the track
-	 */
-	public int getPlays() {
-		return plays;
-	}
-
-	/**
-	 * Function that updates the number of plays of the track.
-	 */
-	public abstract void updatePlays(Playback playback);
 }
+
