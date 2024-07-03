@@ -153,14 +153,12 @@ public final class Database {
 			return "The username " + username + " is already taken.";
 		}
 
-		UserTypes newUser = null;
-		if (type.equals("user")) {
-			newUser = new UserNormal(username, age, city);
-		} else if (type.equals("artist")) {
-			newUser = new UserArtist(username, age, city);
-		} else if (type.equals("host")) {
-			newUser = new UserHost(username, age, city);
-		}
+		UserTypes newUser = switch (type) {
+			case "user" -> new UserNormal(username, age, city);
+			case "artist" -> new UserArtist(username, age, city);
+			case "host" -> new UserHost(username, age, city);
+			default -> null;
+		};
 
 		allUsersCreated.add(newUser);
 

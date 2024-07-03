@@ -93,6 +93,7 @@ public class HttpConnectionWorkerThread extends Thread {
 
 		/* TODO : Parse the request. */
 		ObjectNode r = HttpParser.parseTarget(request);
+		System.out.println(r.toString());
 
 		CommandInput newCommand = objectMapper.convertValue(r, CommandInput.class);
 
@@ -117,8 +118,6 @@ public class HttpConnectionWorkerThread extends Thread {
 		if (stats != null) {
 			jsonResult += stats.toString() + "\n";
 		}
-
-		System.out.println(jsonResult);
 
 		String response = "HTTP/1.1 200 OK" + CRLF
 				+ "Content-Type: application/json" + CRLF

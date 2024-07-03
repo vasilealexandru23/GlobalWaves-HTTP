@@ -33,7 +33,7 @@ public final class SearchCommand extends Command implements CommandRunner {
     public ObjectNode execute(final Database database) {
         ObjectNode output = new ObjectMapper().createObjectNode();
 
-        /* Garanteed that we will always have a normal user. */
+        /* Guaranteed that we will always have a normal user. */
         UserNormal user = ((UserNormal) database.findMyUser(getUsername()));
         MusicPlayer.setTimestamp(getTimestamp());
 

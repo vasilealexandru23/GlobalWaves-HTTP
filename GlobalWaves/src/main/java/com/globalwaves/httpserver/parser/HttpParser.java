@@ -45,35 +45,37 @@ public class HttpParser {
 			/* Invalid field. */
 			if (keyValue.length < 2) continue;
 
-			if (keyValue[0].equals("command")) {
-				ObjectNode filters = new ObjectMapper().createObjectNode();
-				String[] commandParts = keyValue[1].split("\\+");
-
-				if ("search".equals(commandParts[0])) {
-					if (commandParts.length >= 3) {
-						String action = commandParts[0];
-						String type = commandParts[1];
-						String filterPart = commandParts[2];
-						String[] filterKeyValue = filterPart.split("%3D", 2);
-						if (filterKeyValue.length == 2) {
-							String filterKey = filterKeyValue[0];
-							String filterValue = URLDecoder.decode(filterKeyValue[1], StandardCharsets.UTF_8.toString());
-							filters.put(filterKey, filterValue);
+			switch (keyValue[0]) {
+				case "command" -> {
+					ObjectNode filters = new ObjectMapper().createObjectNode();
+					String[] commandParts = keyValue[1].split("\\+");
+					if ("search".equals(commandParts[0])) {
+						if (commandParts.length >= 3) {
+							String action = commandParts[0];
+							String type = commandParts[1];
+							String filterPart = commandParts[2];
+							String[] filterKeyValue = filterPart.split("%3D", 2);
+							if (filterKeyValue.length == 2) {
+								String filterKey = filterKeyValue[0];
+								String filterValue = URLDecoder.decode(filterKeyValue[1], StandardCharsets.UTF_8);
+								filters.put(filterKey, filterValue);
+							}
+							c.put("command", action);
+							c.put("type", type);
+							c.putPOJO("filters", filters);
 						}
-						c.put("command", action);
-						c.put("type", type);
-						c.putPOJO("filters", filters);
+					} else if ("select".equals(commandParts[0])) {
+						c.put("command", commandParts[0]);
+						c.put("itemNumber", commandParts[1]);
+					} else if ("addUser".equals(commandParts[0])) {
+						c.put("command", commandParts[0]);
+						c.put("type", commandParts[1]);
+					} else {
+						c.put("command", commandParts[0]);
 					}
-				} else if ("select".equals(commandParts[0])) {
-					c.put("command", commandParts[0]);
-					c.put("itemNumber", commandParts[1]);
-				} else {
-					c.put("command", commandParts[0]);
-				}
-			} else if (keyValue[0].equals("timestamp")) {
-				c.put(keyValue[0], (Long.parseLong(keyValue[1]) - HttpServer.dataStart) / 1000);
-			} else {
-				c.put(keyValue[0], keyValue[1]);
+				} case "timestamp" -> {
+					c.put(keyValue[0], (Long.parseLong(keyValue[1]) - HttpServer.dataStart) / 1000);
+				} default -> c.put(keyValue[0], keyValue[1]);
 			}
 		}
 

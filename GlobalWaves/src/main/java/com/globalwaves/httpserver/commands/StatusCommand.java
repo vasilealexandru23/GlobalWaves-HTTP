@@ -19,6 +19,10 @@ public final class StatusCommand extends Command implements CommandRunner {
 
         /* Guaranteed that we will always have a normal user. */
         UserNormal user = ((UserNormal) database.findMyUser(getUsername()));
+        if (user == null) {
+            output.put("message", "User not found.");
+            return output;
+        }
 
         outputCommand(output);
         MusicPlayer.setTimestamp(getTimestamp());
