@@ -13,7 +13,7 @@ public final class CommandInput {
 	private String command;
 
 	@Getter
-	private static ArrayList<CommandRunner> commands = new ArrayList<>();
+	private ArrayList<CommandRunner> commands = new ArrayList<>();
 
 	/* For MusicPlayer. */
 	@Getter

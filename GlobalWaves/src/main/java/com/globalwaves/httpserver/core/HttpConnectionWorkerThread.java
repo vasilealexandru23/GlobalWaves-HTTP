@@ -1,8 +1,9 @@
 package com.globalwaves.httpserver.core;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.globalwaves.httpserver.HttpServer;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.globalwaves.httpserver.fileio.input.CommandInput;
 import com.globalwaves.httpserver.fileio.input.LibraryInput;
 import com.globalwaves.httpserver.parser.HttpParser;
@@ -34,7 +35,6 @@ public class HttpConnectionWorkerThread extends Thread {
 		try {
 			LibraryInput library = LibraryInput.getInstance();
 			Database.setLibrary(library);
-			Database db = Database.getInstance();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -89,29 +89,42 @@ public class HttpConnectionWorkerThread extends Thread {
 
 	private void processRequest(final OutputStream client, final String request) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		String jsonTest;
-
-		/* TODO : Parse the request. */
-		String r = HttpParser.parseTarget(request);
 		ArrayNode outputs = objectMapper.createArrayNode();
 
-		CommandInput newCommand = objectMapper.readValue(r, CommandInput.class);
+		/* TODO : Parse the request. */
+		ObjectNode r = HttpParser.parseTarget(request);
 
-		if (!newCommand.constructCommand()) {
-			jsonTest = "Command not found.";
-		} else {
-			jsonTest = "{\"message\": \"Hello World!\"}";
-			outputs.add(newCommand.getCommands().get(0).execute(Database.getInstance()));
+		CommandInput newCommand = objectMapper.convertValue(r, CommandInput.class);
+
+		newCommand.constructCommand();
+
+		outputs.add(newCommand.getCommands().get(0).execute(Database.getInstance()));
+
+		JsonNode message = outputs.findValue("message");
+		JsonNode result = outputs.findValue("results");
+		JsonNode stats = outputs.findValue("stats");
+
+		String jsonResult = "";
+
+		if (message != null) {
+			jsonResult = message.toString() + "\n";
 		}
 
-//		System.out.println(r);
-//		System.out.println(outputs);
+		if (result != null) {
+			jsonResult += result.toString() + "\n";
+		}
+
+		if (stats != null) {
+			jsonResult += stats.toString() + "\n";
+		}
+
+		System.out.println(jsonResult);
 
 		String response = "HTTP/1.1 200 OK" + CRLF
 				+ "Content-Type: application/json" + CRLF
 				+ "Access-Control-Allow-Origin: *" + CRLF
-				+ "Content-Length: " + jsonTest.length() + CRLF
-				+ CRLF + jsonTest + CRLF;
+				+ "Content-Length: " + jsonResult.length() + CRLF
+				+ CRLF + jsonResult + CRLF;
 
 		client.write(response.getBytes());
 	}
